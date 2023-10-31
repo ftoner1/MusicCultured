@@ -1,2 +1,9 @@
-# We are creating a social platform for music lovers to connect and share their tastes. Users can add friends, explore and comment on their friends playlists, explore events that they are going to and view artists and albums.
+# Musicultured
+## A social platform for music lovers to connect and share their tastes. 
+
+### Functionality:
+- Users can explore and comment on their friends playlists
+- Users can look at events and they will/have attended
+- Favorite artists, albums and songs
+- View artists
 
