@@ -7,3 +7,7 @@
 - Favorite artists, albums and songs
 - View artists
 
+### Challenges:
+- Implementing GUI
+- Handling API end-points
+- Developing back-end with PHP + SQL
