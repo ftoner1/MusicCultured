@@ -4,27 +4,28 @@ let artists = [
 ];
 let comments = [];
 
-document.getElementById('toggle-add-artist').addEventListener('click', () => {
+function toggleAddArtistForm() {
+    console.log("Toggle form");
     const form = document.getElementById('add-artist-form');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
-});
+}
 
-document.getElementById('add-artist-form').addEventListener('submit', (e) => {
+function addArtist(e) {
     e.preventDefault();
     const name = document.getElementById('artist-name').value;
     const listeners = document.getElementById('artist-listeners').value;
     const origin = document.getElementById('artist-origin').value;
     artists.push({ name, monthlyListeners: listeners, origin });
     updateArtistsDisplay();
-});
+}
 
-document.getElementById('comment-form').addEventListener('submit', (e) => {
+function addComment(e) {
     e.preventDefault();
     const description = document.getElementById('comment-description').value;
     const author = document.getElementById('comment-author').value;
     comments.push({ description, commentedBy: author });
     updateCommentsDisplay();
-});
+}
 
 function updateArtistsDisplay() {
     const display = document.getElementById('artist-display');
@@ -55,5 +56,10 @@ function updateCommentsDisplay() {
     });
 }
 
-updateArtistsDisplay();
-updateCommentsDisplay();
+window.onload = function() {
+    document.getElementById('toggle-add-artist').addEventListener('click', toggleAddArtistForm);
+    document.getElementById('add-artist-form').addEventListener('submit', addArtist);
+    document.getElementById('comment-form').addEventListener('submit', addComment);
+    updateArtistsDisplay();
+    updateCommentsDisplay();
+};
