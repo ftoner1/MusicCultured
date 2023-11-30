@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css"> <!-- Link to your CSS file -->
+    <title>Profile Page</title>
+</head>
+<body>
+    <div class="main">
+        <div class="icon">
+            <img src="profile-icon.jpg" alt="Profile Icon">
+            <div class="profile-name">Name</div>
+        </div>
+        <div></div>
+        <div class="artist-container">
+            <div class="artist-text">Favourite Artists</div>
+            <div class="artist-display" id="artist-display"></div>
+            <button id="toggle-add-artist">Add Artist</button>
+            <form id="add-artist-form" style="display: none;">
+                <input id="artist-name" placeholder="Artist Name">
+                <input id="artist-listeners" placeholder="Monthly Listeners">
+                <input id="artist-origin" placeholder="Origin">
+                <button type="submit">Add</button>
+            </form>
+        </div>
+        <div>Favorite Albums</div>
+        <div class="comments-container">
+            <div class="comments-header">Comments</div>
+            <form id="comment-form">
+                <textarea id="comment-description" placeholder="Comment..."></textarea>
+                <button type="submit">Send</button>
+                <input id="comment-author" placeholder="Name...">
+            </form>
+            <div class="comments" id="comments"></div>
+        </div>
+    </div>
+    <script src="script.js"></script> <!-- Link to your JavaScript file -->
+</body>
+</html>

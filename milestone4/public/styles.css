@@ -1,0 +1,162 @@
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    height: 100%;
+  
+    color-scheme: light dark;
+  
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+  
+a {
+    text-decoration: none;
+    color: inherit;
+    font-size: large;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+}
+  
+h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+}
+
+button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.25s;
+  }
+  button:hover {
+    border-color: #646cff;
+  }
+  button:focus,
+  button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-left: 10%;
+    padding-right: 10%;
+    height: 100%;
+    color: black;
+    background-color: rgb(134 239 172);
+}
+
+.icon {
+    margin: 2.5rem;
+}
+
+.icon img {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 9999px;
+    margin: 0.625rem;
+}
+
+.profile-name {
+    font-size: 3rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+}
+
+.artist-container {
+    align-self: flex-start;
+    width: 100%;
+    padding-left: 10rem;
+}
+
+.artist {
+    position: relative;
+}
+
+.artist button {
+    font-size: small;
+    position: absolute;
+    top: 0;
+}
+
+.artist-text {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.artist-display {
+    display: flex;
+    justify-content: start;
+    font-size: 1.875rem;
+    max-width: 80%;
+    overflow-x: auto;
+}
+
+.artist-display::-webkit-scrollbar {
+    display: none;
+}
+
+.artist-display img {
+    width: 13rem;
+    height: 13rem;
+}
+
+.artist {
+    flex-shrink: 0;
+    margin-right: 50px;
+}
+
+.comments-container {
+    width: 100%;
+    display: flex;
+    padding-left: 10rem;
+    padding-right: 10rem;
+    flex-direction: column;
+    position: relative;
+}
+
+.comments-header {
+    font-weight: bold;
+    font-size: 1.875rem;
+    margin-bottom: 10px;
+}
+
+.comments-container textarea {
+    border-radius: 5px;
+    width: 100%;
+    height: 50px;
+    padding-left: 10px;
+}
+
+.comments-container input {
+    border-radius: 5px;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+}
+
+.comments-container button {
+    position: absolute;
+    right: 10px;
+    top: 50px;
+}
