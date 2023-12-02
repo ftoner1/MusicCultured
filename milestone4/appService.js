@@ -56,15 +56,17 @@ async function fetchDemotableFromDb() {
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
-            await connection.execute(`DROP TABLE DEMOTABLE`);
+            await connection.execute(`DROP TABLE ARTISTX`);
         } catch(err) {
             console.log('Table might not exist, proceeding to create...');
         }
 
         const result = await connection.execute(`
-            CREATE TABLE DEMOTABLE (
-                id NUMBER PRIMARY KEY,
-                name VARCHAR2(20)
+            CREATE TABLE ARTISTX (
+                artistName VARCHAR(255) PRIMARY KEY,
+                artistOrigin VARCHAR(255),
+                artistDescription CLOB,
+                monthlyListeners INT
             )
         `);
         return true;
