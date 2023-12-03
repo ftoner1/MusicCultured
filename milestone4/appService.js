@@ -66,6 +66,72 @@ async function fetchSongsFromDB() {
     });
 }
 
+async function fetchAlbumsFromDB() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM ALBUM', [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        console.log(result.rows);
+        return result.rows;
+    }).catch(() => {
+        console.log("could not fetch");
+        return [];
+    });
+}
+
+async function fetchNoSongsAlbumFromDB() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `
+            SELECT albumName, COUNT(*) AS NumberOfSongs
+            FROM Song
+            GROUP BY albumName, artistName
+            `
+            , [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        console.log(result.rows);
+        return result.rows;
+    }).catch(() => {
+        console.log("could not fetch");
+        return [];
+    });
+}
+
+async function fetchAlbumFilterListensFromDB(condition) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `
+            SELECT albumName, SUM(numOfListeners) AS TotalPlays
+            FROM Song
+            GROUP BY albumName
+            HAVING SUM(numOfListeners) > :condition
+            `
+            , {condition: condition}, {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        console.log(result.rows);
+        return result.rows;
+    }).catch(() => {
+        console.log("could not fetch");
+        return [];
+    });
+}
+
+async function fetchNestedAgg() {       // NESTED AGGREGATION
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `
+            SELECT a.artistName, AVG(a.total_listeners) AS avg_listeners_per_album
+            FROM (
+                SELECT s.albumName, s.artistName, SUM(s.numOfListeners) AS total_listeners
+                FROM Song s
+                GROUP BY s.albumName, s.artistName
+                ) a GROUP BY a.artistName
+            `
+            , [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        console.log(result.rows);
+        return result.rows;
+    }).catch(() => {
+        console.log("could not fetch");
+        return [];
+    });
+}
+
 async function fetchGaeFromDB(artist) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -87,7 +153,7 @@ async function funFactArtistsDB() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `
-            SELECT p.artistName
+            SELECT DISTINCT p.artistName
             FROM Plays p
             WHERE NOT EXISTS (
                 SELECT i.instrumentName
@@ -225,6 +291,10 @@ module.exports = {
     testOracleConnection,
     fetchArtistsFromDB,
     fetchSongsFromDB,
+    fetchAlbumsFromDB,
+    fetchNoSongsAlbumFromDB,
+    fetchAlbumFilterListensFromDB,
+    fetchNestedAgg,
     fetchGaeFromDB,
     funFactArtistsDB,
     fetchCommentsFromDB,

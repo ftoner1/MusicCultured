@@ -26,6 +26,16 @@ router.get('/fetch-songs', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.get('/fetch-albums', async (req, res) => {
+    const tableContent = await appService.fetchAlbumsFromDB();
+    res.json({data: tableContent});
+});
+
+router.get('/songs-in-album', async (req, res) => { // 7
+    const tableContent = await appService.fetchNoSongsAlbumFromDB();
+    res.json({data: tableContent, success: true});
+});
+
 router.get('/fun-fact-artists', async (req, res) => {
     const tableContent = await appService.funFactArtistsDB();
     res.json({data: tableContent});
@@ -34,6 +44,17 @@ router.get('/fun-fact-artists', async (req, res) => {
 router.get('/fetch-comments', async (req, res) => {
     const tableContent = await appService.fetchCommentsFromDB();
     res.json({data: tableContent});
+});
+
+router.get('/avg-listens-per-album', async (req, res) => { // nested agg
+    const tableContent = await appService.fetchNestedAgg();
+    res.json({data: tableContent, success: true});
+});
+
+router.post('/filter-album-listens', async (req, res) => { // 8
+    let {condition} = req.body;
+    const tableContent = await appService.fetchAlbumFilterListensFromDB(condition);
+    res.json({data: tableContent, success: true});
 });
 
 router.post("/join-gae", async (req, res) => {

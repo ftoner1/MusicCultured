@@ -98,6 +98,7 @@ async function addSong(e) {
     if (responseJSON.success) {
         songs = responseJSON.data;
         fetchSongs();
+        fetchAlbums();
         console.log("successfully added");
     } else {
         console.log("could not log");
@@ -110,6 +111,8 @@ async function fetchArtists() {
     artists = responseData.data;
     console.log(artists);
     updateArtistsDisplay();
+    fetchAlbums();
+    fetchSongs();
     songArtistAlbum("artist-dropdown");
     songArtistAlbum("gae-artist-dropdown");
 }
@@ -190,7 +193,6 @@ async function deleteArtist(artist) {
         console.log("could not delete");
     }
     fetchArtists();
-    fetchSongs();
 }
 
 async function joinGae(e) {
@@ -229,13 +231,89 @@ function gaeDisplay(allGaes) {
 
 async function fetchComments() {
     let res = await fetch("/fetch-comments", {method: "GET"});
-    let resData = res.json();
+    let resData = await res.json();
     if (resData.success) {
         console.log("fetched comments");
+        comments = resData.data;
     } else {
         console.log("could not fetch comment");
     }
-    comments = resData.data;
+}
+
+async function getSongsInAlbum() {
+    let res = await fetch("/songs-in-album", {method: "GET"});
+    let resData = await res.json();
+    if (resData.success) {
+        updateFilteredAlbumsOne(resData.data);
+        console.log(resData.data);
+    } else {
+        console.log("could not songs in album");
+    }
+}
+
+async function filterAlbumAvgListens(e) {
+    e.preventDefault();
+    let input = parseInt(document.getElementById("listen-filter").value);
+    let res = await fetch("/filter-album-listens", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            condition: input
+        })
+    });
+    let resData = await res.json();
+    if (resData.success) {
+        updateFilteredAlbumsTwo(resData.data);
+        console.log(resData.data);
+    } else {
+        console.log("could not songs in album");
+    }
+}
+
+async function listensPerAlbumByArtist() { // nested agg
+    let res = await fetch("/avg-listens-per-album", { method: "GET" });
+    let resData = await res.json();
+    if (resData.success) {
+        updateFilteredAlbumsThree(resData.data);
+        console.log("yay!")
+    } else {
+        console.log("could not nested aggregation");
+    }
+}
+
+function updateFilteredAlbumsOne(filteredAlbums) {
+    const display = document.getElementById('filter');
+    display.innerHTML = '';
+    filteredAlbums.forEach(album => {
+        const albumDiv = document.createElement('div');
+        albumDiv.className = "album";
+        albumDiv.textContent = `${album.NUMBEROFSONGS} songs in ${album.ALBUMNAME}`;
+        display.appendChild(albumDiv);
+    });
+}
+
+function updateFilteredAlbumsTwo(filteredAlbums) {
+    const display = document.getElementById('filter');
+    display.innerHTML = '';
+    filteredAlbums.forEach(album => {
+        const albumDiv = document.createElement('div');
+        albumDiv.className = "album";
+        albumDiv.textContent = `${album.ALBUMNAME} has average of ${album.TOTALPLAYS} listens`;
+        display.appendChild(albumDiv);
+    });
+}
+
+function updateFilteredAlbumsThree(filteredArtist) { // TODO !PAOIEWJF!
+    const display = document.getElementById('filter');
+    display.innerHTML = '';
+    filteredArtist.forEach(artist => {
+        const artistdDiv = document.createElement('div');
+        artistdDiv.className = "album";
+        artistdDiv.textContent = `${artist.ARTISTNAME} averages ${artist.AVG_LISTENERS_PER_ALBUM} listens per Album! Slay queen 💅`;
+        display.appendChild(artistdDiv);
+    });
 }
 
 async function addComment(e) {
@@ -274,9 +352,11 @@ window.onload = function() {
     document.getElementById('comment-form').addEventListener('submit', addComment);
     document.getElementById("check-connection-btn").addEventListener("click", checkConnectionButton);
     document.getElementById("fun-fact-button").addEventListener("click", funFactButton);
+    document.getElementById("get-num-songs").addEventListener("click", getSongsInAlbum);
     document.getElementById("insert-song").addEventListener("submit", addSong);
     document.getElementById("gae-ah-form").addEventListener("submit", joinGae);
+    document.getElementById("get-album-greater").addEventListener("submit", filterAlbumAvgListens);
+    document.getElementById("nested-agg").addEventListener("click", listensPerAlbumByArtist);
     fetchArtists();
-    fetchSongs();
     updateCommentsDisplay();
 };
