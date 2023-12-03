@@ -55,6 +55,17 @@ async function fetchArtistsFromDB() {
     });
 }
 
+async function fetchSongsFromDB() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM SONG', [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        console.log(result.rows);
+        return result.rows;
+    }).catch(() => {
+        console.log("could not fetch");
+        return [];
+    });
+}
+
 async function funFactArtistsDB() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -140,6 +151,22 @@ async function insertArtist(name, listeners, origin) {
     });
 }
 
+
+async function insertSong(songName, artistName, albumName, numOfListeners) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO SONG (songName, artistName, albumName, numOfListeners) VALUES (:n, :o)`,     // UPDATE QUERY
+            {name: songName, artist: artistName, album: albumName, listeners: numOfListeners},
+            { autoCommit: true }    // do not commit because you also need to insert the album it references
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        console.log("could not insert");
+        return false;
+    });
+}
+
 async function addCommentDB(description, commentedBy) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -181,11 +208,13 @@ async function countDemotable() {
 module.exports = {
     testOracleConnection,
     fetchArtistsFromDB,
+    fetchSongsFromDB,
     funFactArtistsDB,
     fetchCommentsFromDB,
     initiateDemotable,
     addCommentDB,
     insertArtist,
+    insertSong,
     deleteArtistDB,
     updateNameDemotable, 
     countDemotable

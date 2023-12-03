@@ -21,6 +21,11 @@ router.get('/fetch-artists', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.get('/fetch-songs', async (req, res) => {
+    const tableContent = await appService.fetchSongsFromDB();
+    res.json({data: tableContent});
+});
+
 router.get('/fun-fact-artists', async (req, res) => {
     const tableContent = await appService.funFactArtistsDB();
     res.json({data: tableContent});
@@ -31,18 +36,19 @@ router.get('/fetch-comments', async (req, res) => {
     res.json({data: tableContent});
 });
 
-router.post("/initiate-demotable", async (req, res) => {
-    const initiateResult = await appService.initiateDemotable();
-    if (initiateResult) {
+router.post("/insert-artist", async (req, res) => {
+    const { artistName, artistMonthlyListeners, artistOrigin } = req.body;
+    const insertResult = await appService.insertArtist(artistName, artistMonthlyListeners, artistOrigin);
+    if (insertResult) {
         res.json({ success: true });
     } else {
         res.status(500).json({ success: false });
     }
 });
 
-router.post("/insert-artist", async (req, res) => {
-    const { artistName, artistMonthlyListeners, artistOrigin } = req.body;
-    const insertResult = await appService.insertArtist(artistName, artistMonthlyListeners, artistOrigin);
+router.post("/insert-song", async (req, res) => {
+    const { songName, artistName, albumName, numOfListeners } = req.body;
+    const insertResult = await appService.insertSong(songName, artistName, albumName, numOfListeners);
     if (insertResult) {
         res.json({ success: true });
     } else {
@@ -59,7 +65,6 @@ router.post("/add-comment", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
-
 
 router.post("/update-name-demotable", async (req, res) => {
     const { oldName, newName } = req.body;

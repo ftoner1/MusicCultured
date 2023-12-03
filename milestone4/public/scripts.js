@@ -1,4 +1,5 @@
 let artists = [];
+let songs = [];
 let comments = [];
 let commentID = 1;
 
@@ -56,12 +57,66 @@ async function addArtist(e) {
     }
 }
 
+function songArtistAlbum() {
+    var select = document.getElementById('artist-dropdown');
+    console.log("works");
+
+    // Clear existing options (optional, if you want to refresh the list)
+    select.innerHTML = '<option>From Artist</option>';
+
+    // Add an option for each artist
+    console.log(artists.length);
+    artists.forEach(artist => {
+        console.log("hello");
+        var option = document.createElement('option');
+        option.value = artist.ARTISTNAME;
+        option.textContent = artist.ARTISTNAME;
+        select.appendChild(option);
+    });
+}
+
+async function addSong(e) {
+    e.preventDefault();
+    const songName = document.getElementById('song-name').value;
+    const artistName = document.getElementById('artist-dropdown').value;
+    const albumName = document.getElementById('song-album').value;
+    const numOfListeners = document.getElementById('song-listeners').value;
+    let response = await fetch("/insert-song", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            songName: songName,
+            artistName: artistName,
+            albumName: albumName,
+            numOfListeners: numOfListeners
+        })
+    });
+    let responseJSON = await response.json();
+    if (responseJSON.success) {
+        songs = responseJSON.data;
+        console.log("successfully added");
+    } else {
+        console.log("could not log");
+    }
+}
+
 async function fetchArtists() {
     let response = await fetch('/fetch-artists', {method: "GET"});
     let responseData = await response.json();
     artists = responseData.data;
     console.log(artists);
     updateArtistsDisplay();
+    songArtistAlbum();
+}
+
+async function fetchSongs() {
+    let response = await fetch('/fetch-songs', {method: "GET"});
+    let responseData = await response.json();
+    songs = responseData.data;
+    console.log(songs);
+    updateSongsDisplay();
 }
 
 function updateArtistsDisplay() {
@@ -76,6 +131,17 @@ function updateArtistsDisplay() {
         deleteButton.addEventListener('click', () => deleteArtist(artist));
         artistDiv.appendChild(deleteButton);
         display.appendChild(artistDiv);
+    });
+}
+
+function updateSongsDisplay() {
+    const display = document.getElementById('song-display');
+    display.innerHTML = '';
+    songs.forEach((song) => {
+        const songDiv = document.createElement('div');
+        songDiv.className = "artist";
+        songDiv.textContent = song.SONGNAME;
+        display.appendChild(songDiv);
     });
 }
 
@@ -103,6 +169,11 @@ async function deleteArtist(artist) {
         console.log("could not delete");
     }
     fetchArtists();
+}
+
+async function joinGae() {
+    const artist = document.getElementById("artist-dropdown").value;
+    
 }
 
 async function fetchComments() {
@@ -152,6 +223,8 @@ window.onload = function() {
     document.getElementById('comment-form').addEventListener('submit', addComment);
     document.getElementById("check-connection-btn").addEventListener("click", checkConnectionButton);
     document.getElementById("fun-fact-button").addEventListener("click", funFactButton);
+    document.getElementById("insert-song").addEventListener("submit", addSong);
     fetchArtists();
+    fetchSongs();
     updateCommentsDisplay();
 };

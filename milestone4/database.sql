@@ -115,6 +115,7 @@ INSERT INTO INSTRUMENT VALUES ('Vocal', 'World');
 
 INSERT INTO PLAYS VALUES ('Ariana Grande', 'Vocal', 6);
 INSERT INTO PLAYS VALUES ('Ed Sheeran', 'Guitar', 7);
+INSERT INTO PLAYS VALUES ('Ed Sheeran', 'Vocal', 7);
 
 
 

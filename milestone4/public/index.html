@@ -31,9 +31,21 @@
         </div>
         <div class="song-container">
             <div>Insert Song</div>
-            <form>
-                <input></input>
+            <form id="insert-song"> 
+                <input placeholder="Song Name" id="song-name"></input>
+                <select id="artist-dropdown">
+                    <option>By Artist</option>
+                </select>
+                <input placeholder="Album Name" id="song-album"></input>
+                <input placeholder="Num of Listeners" id="song-listeners"></input>
             </form>
+            <div class="artist-display" id="song-display"></div>
+        </div>
+        <div class="join-gae">
+            <select id="artist-dropdown">
+                <option>By Artist</option>
+            </select>
+            <div class="artist-display"></div>
         </div>
         <div class="comments-container">
             <div class="comments-header">Comments</div>
