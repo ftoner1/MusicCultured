@@ -47,7 +47,7 @@ async function addArtist(e) {
         alert("Successfully added");
         fetchArtists();
     } else {
-        alert("Invalid input -- do not re-enter artist names and make sure to place correct input types");
+        alert("Invalid input -- make sure not to re-enter artist names and make sure to place correct input types :)");
         console.log("could not log");
     }
 }
@@ -95,7 +95,7 @@ async function addSong(e) {
         fetchAlbums();
         console.log("successfully added");
     } else {
-        console.log("could not log");
+        alert("Invalid input - Make sure to input the right types :)");
     }
 }
 
@@ -189,7 +189,7 @@ async function deleteArtist(artist) {
     fetchArtists();
 }
 
-async function joinGae(e) {
+async function joinGae(e) { //artist discography
     e.preventDefault();
     const artist = document.getElementById("gae-artist-dropdown").value;
     console.log(artist);
