@@ -164,15 +164,9 @@ INSERT INTO Plays VALUES ('Ed Sheeran', 'Vocal', 6);
 INSERT INTO Album VALUES ('Divide', 'Ed Sheeran', '2017-03-03');
 INSERT INTO Album VALUES ('Thank U, Next', 'Ariana Grande', '2019-02-08');
 
-INSERT INTO Song(songName, artistName, albumName, numOfListeners) VALUES ('Shape of you', 'Ed Sheeran', 'Divide', 2000000);
-INSERT INTO Creates VALUES (1, 'Divide', 'Ed Sheeran');
 
-INSERT INTO Song(songName, artistName, albumName, numOfListeners) VALUES ('Perfect', 'Ed Sheeran', 'Divide', 2000000);
-INSERT INTO Creates VALUES (2, 'Divide', 'Ed Sheeran');
-INSERT INTO Song VALUES (3, 'Thank U, Next', 'Ariana Grande', 'Thank U, Next', 2000000);
-INSERT INTO Creates VALUES (3, 'Thank U, Next', 'Ariana Grande');
-INSERT INTO Song VALUES (4, '7 Rings',  'Ariana Grande', 'Thank U, Next', 1000000);
-INSERT INTO Creates VALUES (4, 'Thank U, Next', 'Ariana Grande');
+
+
 
 
 INSERT INTO Singer VALUES ('Ed Sheeran', 'Tenor');

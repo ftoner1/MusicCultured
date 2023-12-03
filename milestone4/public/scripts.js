@@ -456,4 +456,4 @@ window.onload = function() {
     document.getElementById("nested-agg").addEventListener("click", listensPerAlbumByArtist);
     fetchArtists();
     fetchComments();
-};
+}; 
