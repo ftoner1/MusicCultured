@@ -12,17 +12,18 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
 }
+
+html, body {
+    height: 100%; 
+    width: 100%;
+    margin: 0; 
+    padding: 0; 
+}
   
 a {
     text-decoration: none;
     color: inherit;
     font-size: large;
-}
-
-body {
-    height: 100%;
-    width: 100%;
-    margin: 0px;
 }
   
 h1 {
@@ -49,13 +50,14 @@ button {
   }
 
 .main {
+    padding-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    height: 100%;
+    max-width: 100%;
     padding-left: 10%;
     padding-right: 10%;
-    height: 100%;
     color: black;
     background-color: rgb(134 239 172);
 }
@@ -72,16 +74,19 @@ button {
 }
 
 .profile-name {
+    padding: 5px;
     font-size: 3rem;
+    width: auto;
     font-weight: bold;
     display: flex;
     justify-content: center;
+    background-color: #646cff;
+    border-radius: 20px;
 }
 
 .artist-container {
     align-self: flex-start;
     width: 100%;
-    padding-left: 10rem;
 }
 
 .artist {
@@ -97,25 +102,36 @@ button {
 .artist-text {
     font-size: 1.875rem;
     font-weight: bold;
+    margin-right: 0px;
     margin-top: 1rem;
     margin-bottom: 1rem;
+}
+
+.entry-and-artist {
+    display: flex;
+    justify-content: start;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#toggle-add-artist {
+    margin-right: 10px;
+    width: 20%;
+    color: green;
+    border-color: green;
 }
 
 .artist-display {
     display: flex;
     justify-content: start;
     font-size: 1.875rem;
-    max-width: 80%;
+    max-width: 85%;
     overflow-x: auto;
 }
 
 .artist-display::-webkit-scrollbar {
     display: none;
-}
-
-.artist-display img {
-    width: 13rem;
-    height: 13rem;
 }
 
 .artist {
@@ -125,9 +141,11 @@ button {
 
 .comments-container {
     width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     display: flex;
-    padding-left: 10rem;
-    padding-right: 10rem;
+    padding-left: 5%; 
+    padding-right: 5%; 
     flex-direction: column;
     position: relative;
 }

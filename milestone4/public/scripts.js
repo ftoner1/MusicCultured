@@ -17,13 +17,6 @@ async function checkConnectionButton() {
     } catch {
         element.textContent = "Lol nope";
     }
-    // let init = await fetch("/initiate-demotable", {method: 'POST'})
-    // let responseInit = await init.json();
-    // if (responseInit.success) {
-    //     console.log("successfully started");
-    // } else {
-    //     console.error("could not initiate table");
-    // }
     fetchArtists();
 }
 
@@ -433,7 +426,7 @@ async function submitEdit(commentId) {
             description: editedText
         })
     });
-a
+
     let responseData = await response.json();
     if (responseData.success) {
         console.log("Comment updated successfully");

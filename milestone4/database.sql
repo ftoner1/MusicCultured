@@ -20,17 +20,12 @@ CREATE SEQUENCE song_id_seq
 START WITH 1
 INCREMENT BY 1;
 
-
-
-
-
 CREATE TABLE ArtistX (
     artistName VARCHAR(255) PRIMARY KEY,
     artistOrigin VARCHAR(255),
     artistDescription CLOB,
-    monthlyListeners
+    monthlyListeners INT
 );
-
 
 CREATE TABLE Rapper (
     artistName VARCHAR(255) PRIMARY KEY,

@@ -10,13 +10,14 @@
     <div class="main">
         <button id="check-connection-btn">Check Connection</button>
         <div class="icon">
-            <img src="profile-icon.jpg" alt="Profile Icon">
-            <div class="profile-name">Name</div>
+            <div class="profile-name">MusicCultured</div>
         </div>
         <div class="artist-container">
             <div class="artist-text">Favourite Artists</div>
-            <div class="artist-display" id="artist-display"></div>
-            <button id="toggle-add-artist">Add Artist</button>
+            <div class="entry-and-artist">
+                <button id="toggle-add-artist">Add Artist</button>
+                <div class="artist-display" id="artist-display"></div>
+            </div>
             <form id="add-artist-form" style="display: none;">
                 <input id="artist-name" placeholder="Artist Name">
                 <input id="artist-listeners" placeholder="Monthly Listeners">
@@ -73,6 +74,6 @@
             <div class="comments" id="comments"></div>
         </div>
     </div>
-    <script src="scripts.js"></script> <!-- Link to your JavaScript file -->
+    <script src="scripts.js"></script>
 </body>
 </html>
