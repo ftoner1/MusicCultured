@@ -10,7 +10,16 @@ DROP TABLE THREAD CASCADE CONSTRAINTS;
 DROP TABLE SINGER CASCADE CONSTRAINTS;
 DROP TABLE PRODUCER CASCADE CONSTRAINTS;
 DROP TABLE Creates CASCADE CONSTRAINTS;
+DROP SEQUENCE comment_id_seq;
+DROP SEQUENCE song_id_seq;
 
+CREATE SEQUENCE comment_id_seq
+START WITH 1
+INCREMENT BY 1;
+
+CREATE SEQUENCE song_id_seq
+START WITH 1
+INCREMENT BY 1;
 
 CREATE TABLE Events (
     eventName VARCHAR(255),
@@ -32,7 +41,7 @@ CREATE TABLE ArtistX (
 CREATE TABLE Rapper (
     artistName VARCHAR(255) PRIMARY KEY,
     rapStyle VARCHAR(255),
-    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 CREATE TABLE Instrument (
@@ -44,17 +53,17 @@ CREATE TABLE Plays (
     artistName VARCHAR(255) NOT NULL,
     instrumentName VARCHAR(255),
     yearsExperience INT,
+    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName) ON DELETE CASCADE, 
     PRIMARY KEY (artistName, instrumentName),
-    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName),
     FOREIGN KEY (instrumentName) REFERENCES Instrument(instrumentName)
 );
 
 CREATE TABLE Album (
     albumName VARCHAR(255),
-    artist VARCHAR(255),
-    dateCreated DATE,
+    artist VARCHAR(255) DEFAULT NULL, 
+    dateCreated DATE DEFAULT NULL,   
     PRIMARY KEY (albumName, artist),
-    FOREIGN KEY (artist) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (artist) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 
@@ -64,10 +73,37 @@ CREATE TABLE Song (
     dateCreated DATE,
     artistName VARCHAR(255),
     albumName VARCHAR(255),
-    isPartOf VARCHAR(255),
     numOfListeners INT,
-    FOREIGN KEY (albumName, artistName) REFERENCES Album(albumName, artist)
-);
+    FOREIGN KEY (albumName, artistName) REFERENCES Album(albumName, artist) ON DELETE CASCADE
+); 
+
+CREATE OR REPLACE TRIGGER BeforeInsertSong
+BEFORE INSERT ON Song
+FOR EACH ROW
+DECLARE
+    album_exists NUMBER;
+BEGIN
+
+    SELECT song_id_seq.NEXTVAL
+    INTO :new.songID
+    FROM dual;
+
+    SELECT COUNT(*)
+    INTO album_exists
+    FROM Album
+    WHERE albumName = :NEW.albumName AND artist = :NEW.artistName;
+
+
+    IF album_exists = 0 THEN
+        INSERT INTO Album (albumName, artist)
+        VALUES (:NEW.albumName, :NEW.artistName);
+    END IF;
+END;
+/
+
+
+
+
 
 CREATE TABLE Thread (
     commentID INT CHECK (commentID > 0),
@@ -78,18 +114,27 @@ CREATE TABLE Thread (
     PRIMARY KEY (commentID, threadName)
 );
 
+CREATE OR REPLACE TRIGGER thread_before_insert
+BEFORE INSERT ON Thread
+FOR EACH ROW
+BEGIN
+    SELECT comment_id_seq.NEXTVAL
+    INTO :new.commentID
+    FROM dual;
+END;
+/
 
 
 
 CREATE TABLE Singer (
     artistName VARCHAR(255) PRIMARY KEY,
     vocalRange VARCHAR(255),
-    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 CREATE TABLE Producer (
     artistName VARCHAR(255) PRIMARY KEY,
-    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 
@@ -98,9 +143,9 @@ CREATE TABLE Creates (
     albumName VARCHAR(255),
     artist VARCHAR(255),
     PRIMARY KEY (songID, albumName, artist),
-    FOREIGN KEY (songID) REFERENCES Song(songID),
-    FOREIGN KEY (albumName, artist) REFERENCES Album(albumName, artist),
-    FOREIGN KEY (artist) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (songID) REFERENCES Song(songID) ON DELETE CASCADE,
+    FOREIGN KEY (albumName, artist) REFERENCES Album(albumName, artist) ON DELETE CASCADE,
+    FOREIGN KEY (artist) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 
@@ -124,16 +169,22 @@ INSERT INTO Instrument VALUES ('Vocal', 'World');
 
 INSERT INTO Plays VALUES ('Ariana Grande', 'Vocal', 6);
 INSERT INTO Plays VALUES ('Ed Sheeran', 'Guitar', 7);
+INSERT INTO Plays VALUES ('Ed Sheeran', 'Vocal', 6);
 
 
 
 INSERT INTO Album VALUES ('Divide', 'Ed Sheeran', '2017-03-03');
 INSERT INTO Album VALUES ('Thank U, Next', 'Ariana Grande', '2019-02-08');
 
-INSERT INTO Song VALUES (1, 'Shape of you', '2019-01-03', 'Ed Sheeran', 'Divide', 'Pop', 2000000);
-INSERT INTO Song VALUES (2, 'Perfect', '2019-01-03', 'Ed Sheeran', 'Divide', 'Pop', 2000000);
-INSERT INTO Song VALUES (7, 'Thank U, Next', '2019-01-03', 'Ariana Grande', 'Thank U, Next', 'Pop', 2000000);
-INSERT INTO Song VALUES (6, '7 Rings', '2019-01-18', 'Ariana Grande', 'Thank U, Next', 'Pop', 1000000);
+INSERT INTO Song(songName, dateCreated, artistName, albumName, numOfListeners) VALUES ('Shape of you', '2019-01-03', 'Ed Sheeran', 'Divide', 2000000);
+INSERT INTO Creates VALUES (1, 'Divide', 'Ed Sheeran');
+
+INSERT INTO Song(songName, dateCreated, artistName, albumName, numOfListeners) VALUES ('Perfect', '2019-01-03', 'Ed Sheeran', 'Divide', 2000000);
+INSERT INTO Creates VALUES (2, 'Divide', 'Ed Sheeran');
+INSERT INTO Song VALUES (3, 'Thank U, Next', '2019-01-03', 'Ariana Grande', 'Thank U, Next', 2000000);
+INSERT INTO Creates VALUES (3, 'Thank U, Next', 'Ariana Grande');
+INSERT INTO Song VALUES (4, '7 Rings', '2019-01-18', 'Ariana Grande', 'Thank U, Next', 1000000);
+INSERT INTO Creates VALUES (4, 'Thank U, Next', 'Ariana Grande');
 
 
 INSERT INTO Singer VALUES ('Ed Sheeran', 'Tenor');
@@ -141,5 +192,3 @@ INSERT INTO Singer VALUES ('Ariana Grande', 'Soprano');
 
 
 
-INSERT INTO Creates VALUES (1, 'Divide', 'Ed Sheeran');
-INSERT INTO Creates VALUES (2, 'Divide', 'Ed Sheeran');
