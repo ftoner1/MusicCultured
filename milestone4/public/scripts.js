@@ -279,7 +279,6 @@ async function listensPerAlbumByArtist() { // nested agg
     let resData = await res.json();
     if (resData.success) {
         updateFilteredAlbumsThree(resData.data);
-        console.log("yay!")
     } else {
         console.log("could not nested aggregation");
     }
@@ -348,16 +347,77 @@ function updateCommentsDisplay() {
     comments.forEach(comment => {
         const commentDiv = document.createElement('div');
         commentDiv.className = "comment";
-        commentDiv.innerHTML = `
-            <p id="comment-text-${comment.ID}">${comment.DESCR} by ${comment.COMMENTEDBY}</p>
-            <button onclick="editComment(${comment.ID})">Edit</button>
-            <div id="edit-form-${comment.ID}" style="display:none;">
-                <textarea id="edit-text-${comment.ID}">${comment.DESCR}</textarea>
-                <button onclick="submitEdit(${comment.ID})">Save</button>
-            </div>
-        `;
+        commentDiv.textContent = `${comment.DESCRIPTION} by ${comment.COMMENTEDBY}`; 
         commentsDiv.appendChild(commentDiv);
+
+        // Create and configure the edit button
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.onclick = function() {
+            document.getElementById(`edit-form-${comment.ID}`).style.display = 'block';
+        };
+
+        // Create form for editing
+        const editForm = document.createElement('form');
+        editForm.id = `edit-form-${comment.ID}`;
+        editForm.style.display = 'none'; // Initially hide the form
+
+        // Create input for the updated description
+        const descriptionInput = document.createElement('input');
+        descriptionInput.type = 'text';
+        descriptionInput.value = comment.DESCRIPTION;
+        descriptionInput.name = 'description';
+        descriptionInput.className = 'edit-description';
+
+        // Create input for the updated author
+        const authorInput = document.createElement('input');
+        authorInput.type = 'text';
+        authorInput.value = comment.COMMENTEDBY;
+        authorInput.name = 'commentedBy';
+        authorInput.className = 'edit-commentedBy';
+
+        // Create a submit button for the form
+        const submitButton = document.createElement('button');
+        submitButton.type = 'submit';
+        submitButton.textContent = 'Update';
+
+        // Append inputs and button to the form
+        editForm.appendChild(descriptionInput);
+        editForm.appendChild(authorInput);
+        editForm.appendChild(submitButton);
+
+        // Add submit event listener to the form
+        editForm.addEventListener('submit', (e) => editComment(e, comment.COMMENTID, descriptionInput.value, authorInput.value));
+
+        // Append edit button and form to the comment div
+        commentDiv.appendChild(editButton);
+        commentDiv.appendChild(editForm);
+
+        // Append comment div to the comments container
+        commentsDiv.appendChild(commentDiv);
+        
     });
+}
+
+async function editComment(e, commentID, description, author) {
+    e.preventDefault();
+    let res = await fetch("/edit-comment", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            commentId: commentID,
+            description: description,
+            author: author
+        })
+    })
+    let resData = await res.json();
+    if (resData.success) {
+        fetchComments();
+    } else {
+        console.log("could not update comment");
+    }
 }
 
 async function submitEdit(commentId) {
@@ -372,7 +432,7 @@ async function submitEdit(commentId) {
             description: editedText
         })
     });
-
+a
     let responseData = await response.json();
     if (responseData.success) {
         console.log("Comment updated successfully");
@@ -380,12 +440,6 @@ async function submitEdit(commentId) {
     } else {
         console.log("Failed to update comment");
     }
-}
-
-
-function editComment(commentId) {
-    document.getElementById(`comment-text-${commentId}`).style.display = 'none';
-    document.getElementById(`edit-form-${commentId}`).style.display = 'block';
 }
 
 window.onload = function() {

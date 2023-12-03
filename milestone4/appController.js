@@ -52,6 +52,17 @@ router.get('/avg-listens-per-album', async (req, res) => { // nested agg
     res.json({data: tableContent, success: true});
 });
 
+router.post('/edit-comment', async (req, res) => { // UPDATE
+    let {commentId, description, author} = req.body;
+    let response = await appService.editCommentDB(commentId, description, author);
+    console.log(response);
+    if (response) {
+        res.json({success: true});
+    } else {
+        console.log("could not edit");
+    }
+});
+
 router.post('/filter-album-listens', async (req, res) => { // 8
     let {condition} = req.body;
     const tableContent = await appService.fetchAlbumFilterListensFromDB(condition);

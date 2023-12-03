@@ -249,12 +249,30 @@ async function insertSong(songName, artistName, albumName, numOfListeners) {
     });
 }
 
+async function editCommentDB(commentId, description, author) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `
+            UPDATE THREAD SET commentedBy = :author, description = :des 
+            WHERE commentID = :id
+            `,
+            {author: author, des: description, id: commentId},
+            { autoCommit: true }
+        );
+        console.log(result.rowsAffected);
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        console.log("could not add");
+        return false;
+    });
+}
+
 async function addCommentDB(description, commentedBy) {
     return await withOracleDB(async (connection) => {
         console.log(description);
         console.log(commentedBy);
         const result = await connection.execute(
-            `INSERT INTO THREAD (descr, commentedBy) VALUES (:des, :author)`,
+            `INSERT INTO THREAD (description, commentedBy) VALUES (:des, :author)`,
             {des: description, author: commentedBy},
             { autoCommit: true }
         );
@@ -310,6 +328,7 @@ module.exports = {
     fetchAlbumsFromDB,
     fetchNoSongsAlbumFromDB,
     fetchAlbumFilterListensFromDB,
+    editCommentDB,
     fetchNestedAgg,
     fetchGaeFromDB,
     funFactArtistsDB,

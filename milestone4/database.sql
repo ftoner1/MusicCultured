@@ -3,7 +3,6 @@ DROP TABLE ArtistX CASCADE CONSTRAINTS;
 DROP TABLE INSTRUMENT CASCADE CONSTRAINTS;
 DROP TABLE ALBUM CASCADE CONSTRAINTS;
 DROP TABLE SONG CASCADE CONSTRAINTS;
-DROP TABLE Events CASCADE CONSTRAINTS;
 DROP TABLE RAPPER CASCADE CONSTRAINTS;
 DROP TABLE PLAYS CASCADE CONSTRAINTS;
 DROP TABLE THREAD CASCADE CONSTRAINTS;
@@ -21,12 +20,7 @@ CREATE SEQUENCE song_id_seq
 START WITH 1
 INCREMENT BY 1;
 
-CREATE TABLE Events (
-    eventName VARCHAR(255),
-    eventDate DATE,
-    eventLocation VARCHAR(255),
-    PRIMARY KEY (eventName, eventDate)
-);
+
 
 
 
@@ -70,7 +64,6 @@ CREATE TABLE Album (
 CREATE TABLE Song (
     songID INT PRIMARY KEY,
     songName VARCHAR(255),
-    dateCreated DATE,
     artistName VARCHAR(255),
     albumName VARCHAR(255),
     numOfListeners INT,
@@ -103,11 +96,9 @@ END;
 
 
 CREATE TABLE Thread (
-    commentID INT CHECK (commentID > 0),
+    commentID INT CHECK (commentID > 0) PRIMARY KEY,
     commentedBy VARCHAR(255),
-    descr VARCHAR(255),
-    dateCommented DATE,
-    PRIMARY KEY (commentID)
+    description VARCHAR(1000)
 );
 
 CREATE OR REPLACE TRIGGER thread_before_insert
@@ -146,9 +137,6 @@ CREATE TABLE Creates (
 
 
 
-INSERT INTO Events VALUES ('Ariana Grande Concert', '2021-05-10', 'Madison Square Garden');
-INSERT INTO Events VALUES ('Ed Sheeran Concert', '2019-07-22', 'O2 Arena');
-
 
 INSERT INTO ArtistX VALUES ('Ariana Grande', 'USA', 'American singer and actress', 5000000);
 INSERT INTO ArtistX VALUES ('Ed Sheeran', 'UK', 'British singer-songwriter', 3000000);
@@ -172,14 +160,14 @@ INSERT INTO Plays VALUES ('Ed Sheeran', 'Vocal', 6);
 INSERT INTO Album VALUES ('Divide', 'Ed Sheeran', '2017-03-03');
 INSERT INTO Album VALUES ('Thank U, Next', 'Ariana Grande', '2019-02-08');
 
-INSERT INTO Song(songName, dateCreated, artistName, albumName, numOfListeners) VALUES ('Shape of you', '2019-01-03', 'Ed Sheeran', 'Divide', 2000000);
+INSERT INTO Song(songName, artistName, albumName, numOfListeners) VALUES ('Shape of you', 'Ed Sheeran', 'Divide', 2000000);
 INSERT INTO Creates VALUES (1, 'Divide', 'Ed Sheeran');
 
-INSERT INTO Song(songName, dateCreated, artistName, albumName, numOfListeners) VALUES ('Perfect', '2019-01-03', 'Ed Sheeran', 'Divide', 2000000);
+INSERT INTO Song(songName, artistName, albumName, numOfListeners) VALUES ('Perfect', 'Ed Sheeran', 'Divide', 2000000);
 INSERT INTO Creates VALUES (2, 'Divide', 'Ed Sheeran');
-INSERT INTO Song VALUES (3, 'Thank U, Next', '2019-01-03', 'Ariana Grande', 'Thank U, Next', 2000000);
+INSERT INTO Song VALUES (3, 'Thank U, Next', 'Ariana Grande', 'Thank U, Next', 2000000);
 INSERT INTO Creates VALUES (3, 'Thank U, Next', 'Ariana Grande');
-INSERT INTO Song VALUES (4, '7 Rings', '2019-01-18', 'Ariana Grande', 'Thank U, Next', 1000000);
+INSERT INTO Song VALUES (4, '7 Rings',  'Ariana Grande', 'Thank U, Next', 1000000);
 INSERT INTO Creates VALUES (4, 'Thank U, Next', 'Ariana Grande');
 
 
