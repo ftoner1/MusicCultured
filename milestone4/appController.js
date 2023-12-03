@@ -36,6 +36,12 @@ router.get('/fetch-comments', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.post("/join-gae", async (req, res) => {
+    const {artist} = req.body;
+    const tableContent = await appService.fetchGaeFromDB(artist);
+    res.json({data: tableContent});
+});
+
 router.post("/insert-artist", async (req, res) => {
     const { artistName, artistMonthlyListeners, artistOrigin } = req.body;
     const insertResult = await appService.insertArtist(artistName, artistMonthlyListeners, artistOrigin);

@@ -57,8 +57,8 @@ async function addArtist(e) {
     }
 }
 
-function songArtistAlbum() {
-    var select = document.getElementById('artist-dropdown');
+function songArtistAlbum(id) {
+    var select = document.getElementById(id);
     console.log("works");
 
     // Clear existing options (optional, if you want to refresh the list)
@@ -108,7 +108,8 @@ async function fetchArtists() {
     artists = responseData.data;
     console.log(artists);
     updateArtistsDisplay();
-    songArtistAlbum();
+    songArtistAlbum("artist-dropdown");
+    songArtistAlbum("gae-artist-dropdown");
 }
 
 async function fetchSongs() {
@@ -171,9 +172,38 @@ async function deleteArtist(artist) {
     fetchArtists();
 }
 
-async function joinGae() {
-    const artist = document.getElementById("artist-dropdown").value;
-    
+async function joinGae(e) {
+    e.preventDefault();
+    const artist = document.getElementById("gae-artist-dropdown").value;
+    console.log(artist);
+
+    const response = await fetch("/join-gae", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            artist: artist,
+        })
+    });
+    try {
+        let songsGae = await response.json();
+        console.log(songsGae.data);
+        gaeDisplay(songsGae.data);
+    } catch {
+        console.log("could not gae");
+    }
+}
+
+function gaeDisplay(allGaes) {
+    const display = document.getElementById("gae-display");
+    display.innerHTML = "";
+
+    allGaes.forEach(song => {
+        let gae = document.createElement("div");
+        gae.textContent = `${song.SONGNAME} from ${song.ALBUMNAME}`;
+        display.appendChild(gae);
+    })
 }
 
 async function fetchComments() {
@@ -224,6 +254,7 @@ window.onload = function() {
     document.getElementById("check-connection-btn").addEventListener("click", checkConnectionButton);
     document.getElementById("fun-fact-button").addEventListener("click", funFactButton);
     document.getElementById("insert-song").addEventListener("submit", addSong);
+    document.getElementById("gae-ah-form").addEventListener("submit", joinGae);
     fetchArtists();
     fetchSongs();
     updateCommentsDisplay();

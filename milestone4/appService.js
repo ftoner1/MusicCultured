@@ -66,6 +66,23 @@ async function fetchSongsFromDB() {
     });
 }
 
+async function fetchGaeFromDB(artist) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `
+            SELECT S.songName, A.albumName
+            FROM Song S
+            JOIN Album A ON S.albumName = A.albumName AND S.artistName = A.artist
+            WHERE S.artistName = :artistName
+            `
+            , {artistName: artist}, {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        return result.rows;
+    }).catch(() => {
+        console.log("could not fetch");
+        return [];
+    });
+}
+
 async function funFactArtistsDB() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -99,7 +116,6 @@ async function fetchCommentsFromDB() {
         return [];
     });
 }
-
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
@@ -209,6 +225,7 @@ module.exports = {
     testOracleConnection,
     fetchArtistsFromDB,
     fetchSongsFromDB,
+    fetchGaeFromDB,
     funFactArtistsDB,
     fetchCommentsFromDB,
     initiateDemotable,
