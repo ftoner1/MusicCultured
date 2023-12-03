@@ -171,9 +171,9 @@ async function insertArtist(name, listeners, origin) {
 async function insertSong(songName, artistName, albumName, numOfListeners) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `INSERT INTO SONG (songName, artistName, albumName, numOfListeners) VALUES (:n, :o)`,     // UPDATE QUERY
+            `INSERT INTO SONG (songName, artistName, albumName, numOfListeners) VALUES (:name, :artist, :album, :listeners)`,  
             {name: songName, artist: artistName, album: albumName, listeners: numOfListeners},
-            { autoCommit: true }    // do not commit because you also need to insert the album it references
+            { autoCommit: true }  
         );
 
         return result.rowsAffected && result.rowsAffected > 0;

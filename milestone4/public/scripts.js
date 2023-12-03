@@ -1,6 +1,7 @@
 let artists = [];
 let songs = [];
 let comments = [];
+let albums = [];
 let commentID = 1;
 
 function generateNewCommentID() {
@@ -80,7 +81,7 @@ async function addSong(e) {
     const songName = document.getElementById('song-name').value;
     const artistName = document.getElementById('artist-dropdown').value;
     const albumName = document.getElementById('song-album').value;
-    const numOfListeners = document.getElementById('song-listeners').value;
+    const numOfListeners = parseInt(document.getElementById('song-listeners').value);
     let response = await fetch("/insert-song", {
         method: "POST",
         headers: {
@@ -96,6 +97,7 @@ async function addSong(e) {
     let responseJSON = await response.json();
     if (responseJSON.success) {
         songs = responseJSON.data;
+        fetchSongs();
         console.log("successfully added");
     } else {
         console.log("could not log");
@@ -118,6 +120,13 @@ async function fetchSongs() {
     songs = responseData.data;
     console.log(songs);
     updateSongsDisplay();
+}
+
+async function fetchAlbums() {
+    let response = await fetch('/fetch-albums', {method: "GET"});
+    let responseData = await response.json();
+    albums = responseData.data;
+    updateAlbumsDisplay();
 }
 
 function updateArtistsDisplay() {
@@ -146,6 +155,17 @@ function updateSongsDisplay() {
     });
 }
 
+function updateAlbumsDisplay() {
+    const display = document.getElementById('albums-display');
+    display.innerHTML = '';
+    albums.forEach((album) => {
+        const albumDiv = document.createElement('div');
+        albumDiv.className = "artist";
+        albumDiv.textContent = album.ALBUMNAME;
+        display.appendChild(albumDiv);
+    });
+}
+
 async function funFactButton() {
     const display = document.getElementById("fun-fact-artists");
     let response = await fetch('/fun-fact-artists', {method: "GET"});
@@ -170,6 +190,7 @@ async function deleteArtist(artist) {
         console.log("could not delete");
     }
     fetchArtists();
+    fetchSongs();
 }
 
 async function joinGae(e) {
