@@ -10,13 +10,14 @@
     <div class="main">
         <button id="check-connection-btn">Check Connection</button>
         <div class="icon">
-            <img src="profile-icon.jpg" alt="Profile Icon">
-            <div class="profile-name">Name</div>
+            <div class="profile-name">MusicCultured</div>
         </div>
         <div class="artist-container">
             <div class="artist-text">Favourite Artists</div>
-            <div class="artist-display" id="artist-display"></div>
-            <button id="toggle-add-artist">Add Artist</button>
+            <div class="entry-and-artist">
+                <button id="toggle-add-artist">Add Artist</button>
+                <div class="artist-display" id="artist-display"></div>
+            </div>
             <form id="add-artist-form" style="display: none;">
                 <input id="artist-name" placeholder="Artist Name">
                 <input id="artist-listeners" placeholder="Monthly Listeners">
@@ -25,8 +26,7 @@
             </form>
         </div>
         <div class="fun-fact-container">
-            Which artists can play all instruments?
-            <button id="fun-fact-button">Find out!</button>
+            <button id="fun-fact-button">Which artists can play all instruments?</button>
             <div class="artist-display" id="fun-fact-artists"></div>
         </div>
         <div class="song-container">
@@ -43,6 +43,7 @@
             <div class="artist-display" id="song-display"></div>
         </div>
         <div class="join-gae">
+            <h2>Display All Songs From Artist</h2>
             <form id="gae-ah-form">
                 <select id="gae-artist-dropdown">
                     <option>By Artist</option>
@@ -52,16 +53,20 @@
             <div class="artist-display" id="gae-display"></div>
         </div>
         <div class="albums-container">
+            <h2>All Albums</h2>
             <div class="artist-display" id="albums-display"></div>
-            <button id="get-num-songs">Num of Songs Per Album</button>
-            <form id="get-album-greater">
-                Albums with average listens greater than
-                <input id="listen-filter" placeholder="Listens"></input>
-                <button>Lets find out</button>
-            </form>
-            <button id="nested-agg">Nested Aggregation</button>
-            Filter
-            <div id="filter"></div>
+            <div class="filter-conditions">
+                Choose One!
+                <button id="get-num-songs">Num of Songs Per Album</button>
+                <button id="nested-agg">Average Listens per Album For Artist</button>
+                <form id="get-album-greater">
+                    Albums with average listens greater than
+                    <input id="listen-filter" placeholder="Listens"></input>
+                    <button>Lets find out</button>
+                </form>
+                <h3>Filter Here:</h3>
+                <div id="filter"></div>
+            </div>
         </div>
         <div class="comments-container">
             <div class="comments-header">Comments</div>
@@ -73,6 +78,6 @@
             <div class="comments" id="comments"></div>
         </div>
     </div>
-    <script src="scripts.js"></script> <!-- Link to your JavaScript file -->
+    <script src="scripts.js"></script>
 </body>
 </html>
