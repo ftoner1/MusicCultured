@@ -1,9 +1,8 @@
 # Musicultured
-## A social platform for music lovers to connect and share their tastes. 
+## A platform for users to interact with their favourite artists, songs, and albums
 
 ### Functionality:
-- Users can explore and comment on their friends playlists
-- Users can look at events and they will/have attended
+
 - Favorite artists, albums and songs
 - View artists
 
