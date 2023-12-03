@@ -43,7 +43,8 @@ router.get('/fun-fact-artists', async (req, res) => {
 
 router.get('/fetch-comments', async (req, res) => {
     const tableContent = await appService.fetchCommentsFromDB();
-    res.json({data: tableContent});
+    console.log(tableContent)
+    res.json({data: tableContent, success: true});
 });
 
 router.get('/avg-listens-per-album', async (req, res) => { // nested agg
@@ -82,6 +83,18 @@ router.post("/insert-song", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+router.post("/update-comment/:id", async (req, res) => {
+    const commentId = req.params.id;
+    const { description } = req.body;
+    const updateResult = await appService.updateCommentDB(commentId, description);
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 
 router.post("/add-comment", async (req, res) => {
     const { description, commentedBy } = req.body;

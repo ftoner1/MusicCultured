@@ -251,12 +251,14 @@ async function insertSong(songName, artistName, albumName, numOfListeners) {
 
 async function addCommentDB(description, commentedBy) {
     return await withOracleDB(async (connection) => {
+        console.log(description);
+        console.log(commentedBy);
         const result = await connection.execute(
-            `INSERT INTO THREAD (description, commentedBy) VALUES (:des, :author)`,
+            `INSERT INTO THREAD (descr, commentedBy) VALUES (:des, :author)`,
             {des: description, author: commentedBy},
             { autoCommit: true }
         );
-
+        console.log(result.rowsAffected);
         return result.rowsAffected && result.rowsAffected > 0;
     }).catch(() => {
         console.log("could not add");
@@ -274,6 +276,20 @@ async function updateNameDemotable(oldName, newName) {
 
         return result.rowsAffected && result.rowsAffected > 0;
     }).catch(() => {
+        return false;
+    });
+}
+
+async function updateCommentDB(commentId, description) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE THREAD SET descr = :description WHERE id = :commentId`,
+            {description: description, commentId: commentId},
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((err) => {
+        console.log("Error updating comment: ", err);
         return false;
     });
 }

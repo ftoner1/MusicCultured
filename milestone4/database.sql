@@ -102,16 +102,12 @@ END;
 /
 
 
-
-
-
 CREATE TABLE Thread (
     commentID INT CHECK (commentID > 0),
-    threadName VARCHAR(255) NOT NULL,
     commentedBy VARCHAR(255),
-    description CLOB,
+    descr VARCHAR(255),
     dateCommented DATE,
-    PRIMARY KEY (commentID, threadName)
+    PRIMARY KEY (commentID)
 );
 
 CREATE OR REPLACE TRIGGER thread_before_insert

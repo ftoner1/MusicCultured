@@ -235,9 +235,11 @@ async function fetchComments() {
     if (resData.success) {
         console.log("fetched comments");
         comments = resData.data;
+        console.log(comments);
     } else {
         console.log("could not fetch comment");
     }
+    updateCommentsDisplay();
 }
 
 async function getSongsInAlbum() {
@@ -322,7 +324,7 @@ async function addComment(e) {
     const author = document.getElementById('comment-author').value;
     let res = await fetch("/add-comment", {
         method: "POST",
-        header: {
+        headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -331,8 +333,13 @@ async function addComment(e) {
         }
         )
     })
-    fetchComments();
-    updateCommentsDisplay();
+    let resJSON = await res.json();
+    if (resJSON.success) {
+        console.log("yay!");
+        fetchComments();
+    } else {
+        console.log("nooo");
+    }
 }
 
 function updateCommentsDisplay() {
@@ -341,9 +348,44 @@ function updateCommentsDisplay() {
     comments.forEach(comment => {
         const commentDiv = document.createElement('div');
         commentDiv.className = "comment";
-        commentDiv.textContent = `${comment.description} by ${comment.commentedBy}`;
+        commentDiv.innerHTML = `
+            <p id="comment-text-${comment.ID}">${comment.DESCR} by ${comment.COMMENTEDBY}</p>
+            <button onclick="editComment(${comment.ID})">Edit</button>
+            <div id="edit-form-${comment.ID}" style="display:none;">
+                <textarea id="edit-text-${comment.ID}">${comment.DESCR}</textarea>
+                <button onclick="submitEdit(${comment.ID})">Save</button>
+            </div>
+        `;
         commentsDiv.appendChild(commentDiv);
     });
+}
+
+async function submitEdit(commentId) {
+    const editedText = document.getElementById(`edit-text-${commentId}`).value;
+
+    let response = await fetch(`/update-comment/${commentId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            description: editedText
+        })
+    });
+
+    let responseData = await response.json();
+    if (responseData.success) {
+        console.log("Comment updated successfully");
+        fetchComments();
+    } else {
+        console.log("Failed to update comment");
+    }
+}
+
+
+function editComment(commentId) {
+    document.getElementById(`comment-text-${commentId}`).style.display = 'none';
+    document.getElementById(`edit-form-${commentId}`).style.display = 'block';
 }
 
 window.onload = function() {
@@ -358,5 +400,5 @@ window.onload = function() {
     document.getElementById("get-album-greater").addEventListener("submit", filterAlbumAvgListens);
     document.getElementById("nested-agg").addEventListener("click", listensPerAlbumByArtist);
     fetchArtists();
-    updateCommentsDisplay();
+    fetchComments();
 };
