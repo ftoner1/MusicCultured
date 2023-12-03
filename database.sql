@@ -41,7 +41,7 @@ CREATE TABLE ArtistX (
 CREATE TABLE Rapper (
     artistName VARCHAR(255) PRIMARY KEY,
     rapStyle VARCHAR(255),
-    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 CREATE TABLE Instrument (
@@ -53,17 +53,17 @@ CREATE TABLE Plays (
     artistName VARCHAR(255) NOT NULL,
     instrumentName VARCHAR(255),
     yearsExperience INT,
+    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName) ON DELETE CASCADE, 
     PRIMARY KEY (artistName, instrumentName),
-    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName),
     FOREIGN KEY (instrumentName) REFERENCES Instrument(instrumentName)
 );
 
 CREATE TABLE Album (
     albumName VARCHAR(255),
-    artist VARCHAR(255) DEFAULT NULL,  -- Allowing NULL for automatic entry
-    dateCreated DATE DEFAULT NULL,     -- Optional: Date field for album
+    artist VARCHAR(255) DEFAULT NULL, 
+    dateCreated DATE DEFAULT NULL,   
     PRIMARY KEY (albumName, artist),
-    FOREIGN KEY (artist) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (artist) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 
@@ -74,7 +74,7 @@ CREATE TABLE Song (
     artistName VARCHAR(255),
     albumName VARCHAR(255),
     numOfListeners INT,
-    FOREIGN KEY (albumName, artistName) REFERENCES Album(albumName, artist)
+    FOREIGN KEY (albumName, artistName) REFERENCES Album(albumName, artist) ON DELETE CASCADE
 ); 
 
 CREATE OR REPLACE TRIGGER BeforeInsertSong
@@ -83,18 +83,17 @@ FOR EACH ROW
 DECLARE
     album_exists NUMBER;
 BEGIN
-    -- Increment songID from the sequence
+
     SELECT song_id_seq.NEXTVAL
     INTO :new.songID
     FROM dual;
 
-    -- Check if the album already exists
     SELECT COUNT(*)
     INTO album_exists
     FROM Album
     WHERE albumName = :NEW.albumName AND artist = :NEW.artistName;
 
-    -- If the album does not exist, create a new one
+
     IF album_exists = 0 THEN
         INSERT INTO Album (albumName, artist)
         VALUES (:NEW.albumName, :NEW.artistName);
@@ -130,12 +129,12 @@ END;
 CREATE TABLE Singer (
     artistName VARCHAR(255) PRIMARY KEY,
     vocalRange VARCHAR(255),
-    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 CREATE TABLE Producer (
     artistName VARCHAR(255) PRIMARY KEY,
-    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (artistName) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 
@@ -144,9 +143,9 @@ CREATE TABLE Creates (
     albumName VARCHAR(255),
     artist VARCHAR(255),
     PRIMARY KEY (songID, albumName, artist),
-    FOREIGN KEY (songID) REFERENCES Song(songID),
-    FOREIGN KEY (albumName, artist) REFERENCES Album(albumName, artist),
-    FOREIGN KEY (artist) REFERENCES ArtistX(artistName)
+    FOREIGN KEY (songID) REFERENCES Song(songID) ON DELETE CASCADE,
+    FOREIGN KEY (albumName, artist) REFERENCES Album(albumName, artist) ON DELETE CASCADE,
+    FOREIGN KEY (artist) REFERENCES ArtistX(artistName) ON DELETE CASCADE
 );
 
 
