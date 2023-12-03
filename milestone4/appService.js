@@ -55,10 +55,33 @@ async function fetchArtistsFromDB() {
     });
 }
 
+async function funFactArtistsDB() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `
+            SELECT p.artistName
+            FROM Plays p
+            WHERE NOT EXISTS (
+                SELECT i.instrumentName
+                FROM Instrument i
+                WHERE NOT EXISTS (
+                    SELECT *
+                    FROM Plays p2
+                    WHERE p2.artistName = p.artistName AND p2.instrumentName = i.instrumentName
+                )
+            )
+            `, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        console.log(result.rows);
+        return result.rows;
+    }).catch(() => {
+        console.log("could not fetch");
+        return [];
+    });
+}
+
 async function fetchCommentsFromDB() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT * FROM THREAD', [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
-        console.log(result.rows);
         return result.rows;
     }).catch(() => {
         console.log("could not fetch");
@@ -117,6 +140,21 @@ async function insertArtist(name, listeners, origin) {
     });
 }
 
+async function addCommentDB(description, commentedBy) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO THREAD (description, commentedBy) VALUES (:des, :author)`,
+            {des: description, author: commentedBy},
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        console.log("could not add");
+        return false;
+    });
+}
+
 async function updateNameDemotable(oldName, newName) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -143,8 +181,10 @@ async function countDemotable() {
 module.exports = {
     testOracleConnection,
     fetchArtistsFromDB,
+    funFactArtistsDB,
     fetchCommentsFromDB,
     initiateDemotable,
+    addCommentDB,
     insertArtist,
     deleteArtistDB,
     updateNameDemotable, 

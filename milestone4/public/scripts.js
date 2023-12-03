@@ -1,8 +1,10 @@
-let artists = [
-    { artistName: "Kanye West", monthlyListeners: 1000000, artistOrigin: "Chicago" },
-    // ... other initial artists
-];
+let artists = [];
 let comments = [];
+let commentID = 1;
+
+function generateNewCommentID() {
+    commentID = commentID + comments.length;
+}
 
 async function checkConnectionButton() {
     let element = document.getElementById("check-connection-btn");
@@ -13,13 +15,13 @@ async function checkConnectionButton() {
     } catch {
         element.textContent = "Lol nope";
     }
-    let init = await fetch("/initiate-demotable", {method: 'POST'})
-    let responseInit = await init.json();
-    if (responseInit.success) {
-        console.log("successfully started");
-    } else {
-        console.error("could not initiate table");
-    }
+    // let init = await fetch("/initiate-demotable", {method: 'POST'})
+    // let responseInit = await init.json();
+    // if (responseInit.success) {
+    //     console.log("successfully started");
+    // } else {
+    //     console.error("could not initiate table");
+    // }
     fetchArtists();
 }
 
@@ -77,6 +79,20 @@ function updateArtistsDisplay() {
     });
 }
 
+async function funFactButton() {
+    const display = document.getElementById("fun-fact-artists");
+    let response = await fetch('/fun-fact-artists', {method: "GET"});
+    let responseData = await response.json();
+    let goatedArtists = responseData.data;
+    goatedArtists.forEach((artist, index) => {
+        const artistDiv = document.createElement('div');
+        artistDiv.className = "artist";
+        artistDiv.textContent = artist.ARTISTNAME;
+        display.appendChild(artistDiv);
+    });
+    console.log(goatedArtists);
+}
+
 async function deleteArtist(artist) {
     let deleteCondition = artist.ARTISTNAME;
     let res = await fetch(`/remove-artist/${deleteCondition}`, {method: "DELETE"});
@@ -97,7 +113,7 @@ async function fetchComments() {
     } else {
         console.log("could not fetch comment");
     }
-    comments = resData;
+    comments = resData.data;
 }
 
 async function addComment(e) {
@@ -110,8 +126,8 @@ async function addComment(e) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            commentDescription: description,
-            commentAuthor: author
+            description: description,
+            commentedBy: author
         }
         )
     })
@@ -135,6 +151,7 @@ window.onload = function() {
     document.getElementById('add-artist-form').addEventListener('submit', addArtist);
     document.getElementById('comment-form').addEventListener('submit', addComment);
     document.getElementById("check-connection-btn").addEventListener("click", checkConnectionButton);
+    document.getElementById("fun-fact-button").addEventListener("click", funFactButton);
     fetchArtists();
     updateCommentsDisplay();
 };

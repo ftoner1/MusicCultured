@@ -21,6 +21,11 @@ router.get('/fetch-artists', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.get('/fun-fact-artists', async (req, res) => {
+    const tableContent = await appService.funFactArtistsDB();
+    res.json({data: tableContent});
+});
+
 router.get('/fetch-comments', async (req, res) => {
     const tableContent = await appService.fetchCommentsFromDB();
     res.json({data: tableContent});
@@ -44,6 +49,17 @@ router.post("/insert-artist", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+router.post("/add-comment", async (req, res) => {
+    const { description, commentedBy } = req.body;
+    const insertResult = await appService.addCommentDB(description, commentedBy);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 
 router.post("/update-name-demotable", async (req, res) => {
     const { oldName, newName } = req.body;

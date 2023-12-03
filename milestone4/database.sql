@@ -19,8 +19,6 @@ CREATE TABLE EVENTS (
     PRIMARY KEY (eventName, eventDate)
 );
 
-
-
 CREATE TABLE ARTISTX (
     artistName VARCHAR(255) PRIMARY KEY,
     artistOrigin VARCHAR(255),
@@ -70,12 +68,9 @@ CREATE TABLE SONG (
 );
 
 CREATE TABLE THREAD (
-    commentID INT CHECK (commentID > 0),
-    threadName VARCHAR(255) NOT NULL,
+    commentID INT PRIMARY KEY,
     commentedBy VARCHAR(255),
-    description CLOB,
-    dateCommented DATE,
-    PRIMARY KEY (commentID, threadName)
+    commentText CLOB,
 );
 
 
@@ -100,8 +95,6 @@ CREATE TABLE CREATES (
     FOREIGN KEY (albumName, artist) REFERENCES Album(albumName, artist),
     FOREIGN KEY (artist) REFERENCES ArtistX(artistName)
 );
-
-
 
 INSERT INTO EVENTS VALUES ('Ariana Grande Concert', '2021-05-10', 'Madison Square Garden');
 INSERT INTO EVENTS VALUES ('Ed Sheeran Concert', '2019-07-22', 'O2 Arena');
@@ -137,7 +130,6 @@ INSERT INTO SONG VALUES (6, '7 Rings', '2019-01-18', 'Ariana Grande', 'Thank U, 
 INSERT INTO SINGER VALUES ('Ed Sheeran', 'Tenor');
 INSERT INTO SINGER VALUES ('Ariana Grande', 'Soprano');
 
-
-
 INSERT INTO CREATES VALUES (1, 'Divide', 'Ed Sheeran');
 INSERT INTO CREATES VALUES (2, 'Divide', 'Ed Sheeran');
+COMMIT;

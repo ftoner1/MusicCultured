@@ -23,8 +23,6 @@ const importStatements = {
         );
     `,
     
-    
-    
     instrument: `
         CREATE TABLE Instrument (
             instrumentName VARCHAR(255) PRIMARY KEY,
