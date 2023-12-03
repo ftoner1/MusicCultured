@@ -51,9 +51,10 @@ async function addArtist(e) {
     });
     let responseJSON = await response.json();
     if (responseJSON.success) {
-        console.log("successfully added");
+        alert("Successfully added");
         fetchArtists();
     } else {
+        alert("Invalid input -- do not re-enter artist names and make sure to place correct input types");
         console.log("could not log");
     }
 }

@@ -221,8 +221,8 @@ async function deleteArtistDB(artistName) {
 async function insertArtist(name, listeners, origin) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `INSERT INTO ARTISTX (artistName, artistOrigin) VALUES (:n, :o)`,
-            {n: name, o: origin},
+            `INSERT INTO ARTISTX (artistName, artistOrigin, monthlyListeners) VALUES (:n, :o, :l)`,
+            {n: name, o: origin, l: listeners},
             { autoCommit: true }
         );
 

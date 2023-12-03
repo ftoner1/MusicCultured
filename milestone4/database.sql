@@ -28,7 +28,7 @@ CREATE TABLE ArtistX (
     artistName VARCHAR(255) PRIMARY KEY,
     artistOrigin VARCHAR(255),
     artistDescription CLOB,
-    monthlyListeners INT
+    monthlyListeners
 );
 
 
