@@ -10,7 +10,11 @@ DROP TABLE THREAD CASCADE CONSTRAINTS;
 DROP TABLE SINGER CASCADE CONSTRAINTS;
 DROP TABLE PRODUCER CASCADE CONSTRAINTS;
 DROP TABLE Creates CASCADE CONSTRAINTS;
+DROP SEQUENCE comment_id_seq;
 
+CREATE SEQUENCE comment_id_seq
+START WITH 1
+INCREMENT BY 1;
 
 CREATE TABLE Events (
     eventName VARCHAR(255),
@@ -78,6 +82,15 @@ CREATE TABLE Thread (
     PRIMARY KEY (commentID, threadName)
 );
 
+CREATE OR REPLACE TRIGGER thread_before_insert
+BEFORE INSERT ON Thread
+FOR EACH ROW
+BEGIN
+    SELECT comment_id_seq.NEXTVAL
+    INTO :new.commentID
+    FROM dual;
+END;
+/
 
 
 
@@ -124,6 +137,7 @@ INSERT INTO Instrument VALUES ('Vocal', 'World');
 
 INSERT INTO Plays VALUES ('Ariana Grande', 'Vocal', 6);
 INSERT INTO Plays VALUES ('Ed Sheeran', 'Guitar', 7);
+INSERT INTO Plays VALUES ('Ed Sheeran', 'Vocal', 6);
 
 
 
