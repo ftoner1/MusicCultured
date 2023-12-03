@@ -16,8 +16,13 @@ router.get('/check-db-connection', async (req, res) => {
     }
 });
 
-router.get('/demotable', async (req, res) => {
-    const tableContent = await appService.fetchDemotableFromDb();
+router.get('/fetch-artists', async (req, res) => {
+    const tableContent = await appService.fetchArtistsFromDB();
+    res.json({data: tableContent});
+});
+
+router.get('/fetch-comments', async (req, res) => {
+    const tableContent = await appService.fetchCommentsFromDB();
     res.json({data: tableContent});
 });
 
@@ -30,9 +35,9 @@ router.post("/initiate-demotable", async (req, res) => {
     }
 });
 
-router.post("/insert-demotable", async (req, res) => {
-    const { id, name } = req.body;
-    const insertResult = await appService.insertDemotable(id, name);
+router.post("/insert-artist", async (req, res) => {
+    const { artistName, artistMonthlyListeners, artistOrigin } = req.body;
+    const insertResult = await appService.insertArtist(artistName, artistMonthlyListeners, artistOrigin);
     if (insertResult) {
         res.json({ success: true });
     } else {
@@ -49,6 +54,16 @@ router.post("/update-name-demotable", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+router.delete("/remove-artist/:artistName", async (req, res) => {
+    const condition = req.params.artistName;
+    const updateResult = await appService.deleteArtistDB(condition);
+    if (updateResult) {
+        res.json( { success: true});
+    } else {
+        res.status(500).json( {success: false});
+    }
+})
 
 router.get('/count-demotable', async (req, res) => {
     const tableCount = await appService.countDemotable();

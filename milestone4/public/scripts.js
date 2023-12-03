@@ -1,5 +1,5 @@
 let artists = [
-    { name: "Kanye West", monthlyListeners: 1000000, origin: "Chicago" },
+    { artistName: "Kanye West", monthlyListeners: 1000000, artistOrigin: "Chicago" },
     // ... other initial artists
 ];
 let comments = [];
@@ -16,10 +16,11 @@ async function checkConnectionButton() {
     let init = await fetch("/initiate-demotable", {method: 'POST'})
     let responseInit = await init.json();
     if (responseInit.success) {
-        console.log("successfully added");
+        console.log("successfully started");
     } else {
         console.error("could not initiate table");
     }
+    fetchArtists();
 }
 
 function toggleAddArtistForm() {
@@ -31,11 +32,11 @@ function toggleAddArtistForm() {
 async function addArtist(e) {
     e.preventDefault();
     const name = document.getElementById('artist-name').value;
-    const listeners = document.getElementById('artist-listeners').value;
+    const listeners = parseInt(document.getElementById('artist-listeners').value, 10);
     const origin = document.getElementById('artist-origin').value;
     let response = await fetch("/insert-artist", {
         method: "POST",
-        header: {
+        headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -44,19 +45,21 @@ async function addArtist(e) {
             artistOrigin: origin
         })
     });
-    if (response.json().success) {
+    let responseJSON = await response.json();
+    if (responseJSON.success) {
         console.log("successfully added");
+        fetchArtists();
     } else {
         console.log("could not log");
     }
-    fetchArtists();
-    updateArtistsDisplay();
 }
 
 async function fetchArtists() {
-    let response = await fetch('/get-artists', {method: "GET"});
-    let responsedData = await response.json();
+    let response = await fetch('/fetch-artists', {method: "GET"});
+    let responseData = await response.json();
     artists = responseData.data;
+    console.log(artists);
+    updateArtistsDisplay();
 }
 
 function updateArtistsDisplay() {
@@ -65,7 +68,7 @@ function updateArtistsDisplay() {
     artists.forEach((artist, index) => {
         const artistDiv = document.createElement('div');
         artistDiv.className = "artist";
-        artistDiv.textContent = artist.name;
+        artistDiv.textContent = artist.ARTISTNAME;
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'X';
         deleteButton.addEventListener('click', () => deleteArtist(artist));
@@ -75,15 +78,15 @@ function updateArtistsDisplay() {
 }
 
 async function deleteArtist(artist) {
-    let deleteCondition = artist.name;
+    let deleteCondition = artist.ARTISTNAME;
     let res = await fetch(`/remove-artist/${deleteCondition}`, {method: "DELETE"});
-    if (res.json().success) {
+    let resJson = await res.json();
+    if (resJson.success) {
         console.log("successfully deleted");
     } else {
         console.log("could not delete");
     }
     fetchArtists();
-    updateArtistsDisplay();
 }
 
 async function fetchComments() {
@@ -132,6 +135,6 @@ window.onload = function() {
     document.getElementById('add-artist-form').addEventListener('submit', addArtist);
     document.getElementById('comment-form').addEventListener('submit', addComment);
     document.getElementById("check-connection-btn").addEventListener("click", checkConnectionButton);
-    updateArtistsDisplay();
+    fetchArtists();
     updateCommentsDisplay();
 };

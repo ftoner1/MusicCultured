@@ -7,7 +7,7 @@ const envVariables = loadEnvFile('./.env');
 const dbConfig = {
     user: envVariables.ORACLE_USER,
     password: envVariables.ORACLE_PASS,
-    connectString: `${envVariables.ORACLE_HOST}:${envVariables.ORACLE_PORT}/${envVariables.ORACLE_DBNAME}`
+    connectString: `${envVariables.ORACLE_HOST}:${envVariables.ORACLE_PORT}/${envVariables.ORACLE_DBNAME}`,
 };
 
 
@@ -44,11 +44,24 @@ async function testOracleConnection() {
     });
 }
 
-async function fetchDemotableFromDb() {
+async function fetchArtistsFromDB() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT * FROM DEMOTABLE');
+        const result = await connection.execute('SELECT * FROM ARTISTX', [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        console.log(result.rows);
         return result.rows;
     }).catch(() => {
+        console.log("could not fetch");
+        return [];
+    });
+}
+
+async function fetchCommentsFromDB() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM THREAD', [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        console.log(result.rows);
+        return result.rows;
+    }).catch(() => {
+        console.log("could not fetch");
         return [];
     });
 }
@@ -57,16 +70,16 @@ async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
             await connection.execute(`DROP TABLE ARTISTX`);
+            console.log("Dropped table");
         } catch(err) {
             console.log('Table might not exist, proceeding to create...');
         }
-
         const result = await connection.execute(`
             CREATE TABLE ARTISTX (
-                artistName VARCHAR(255) PRIMARY KEY,
-                artistOrigin VARCHAR(255),
+                artistName VARCHAR2(255) PRIMARY KEY,
+                artistOrigin VARCHAR2(255),
                 artistDescription CLOB,
-                monthlyListeners INT
+                monthlyListeners NUMBER
             )
         `);
         return true;
@@ -75,16 +88,31 @@ async function initiateDemotable() {
     });
 }
 
-async function insertDemotable(id, name) {
+async function deleteArtistDB(artistName) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `INSERT INTO DEMOTABLE (id, name) VALUES (:id, :name)`,
-            [id, name],
+            'DELETE FROM ARTISTX WHERE ARTISTNAME = :name',
+            {name: artistName},
+            {outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true}
+        );
+        console.log(result.rowsAffected);
+        return true;
+    }).catch(() => {
+        return false;
+    })
+}
+
+async function insertArtist(name, listeners, origin) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO ARTISTX (artistName, artistOrigin) VALUES (:n, :o)`,
+            {n: name, o: origin},
             { autoCommit: true }
         );
 
         return result.rowsAffected && result.rowsAffected > 0;
     }).catch(() => {
+        console.log("could not insert");
         return false;
     });
 }
@@ -114,9 +142,11 @@ async function countDemotable() {
 
 module.exports = {
     testOracleConnection,
-    fetchDemotableFromDb,
-    initiateDemotable, 
-    insertDemotable, 
+    fetchArtistsFromDB,
+    fetchCommentsFromDB,
+    initiateDemotable,
+    insertArtist,
+    deleteArtistDB,
     updateNameDemotable, 
     countDemotable
 };
