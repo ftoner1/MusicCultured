@@ -18,7 +18,7 @@
     - Viewing events
 - Handling API end-points
     - For all of the events above, interaction leads to some entry in the database (eg: logging in populates a User, adding friends adds friend to a User)
-- Developing back-end with PHP + SQL
+- Developing back-end with Node.js + SQL
 
 ### Aspirations:
 #### Implementations if we have enough time
